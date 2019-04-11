@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Title -->
+    <title>Image Cropper</title>
+
+    <!-- Cropper -->
+    <link rel="stylesheet" href="croppie/croppie.css">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="bootstrap-4/css/bootstrap.min.css">
+
+    <style>
+        #img_crop_preview{
+            border: 1px solid #6c757d;
+            border-radius: 5px;
+            box-shadow: 2px 2px 10px rgba(32,33,36,0.28);
+        }
+    </style>
+</head>
+<body>
+
+    <section class="container mt-5">
+        <div class="row">
+            <div class="col-lg-5">
+                <h3>Demo</h3>
+
+                <div class="input-group mb-3">
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="img_upload" name="upload_image" accept="image/*">
+                        <label class="custom-file-label">Choose file</label>
+                    </div>
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" id="btn_img_crop" type="button">Crop Image</button>
+                    </div>
+                </div>
+
+                <div id="img_crop"></div>
+            </div>
+            <div class="col-lg-5">
+                <h3>Preview (base64)</h3>
+                <div>
+                    <img src="" alt="" id="img_crop_preview">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bootstrap -->
+    <script src="bootstrap-4/js/jquery-3.3.0.min.js"></script>
+    <script src="bootstrap-4/js/bootstrap.min.js"></script>
+    <!-- Cropper -->
+    <script src="croppie/croppie.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $img_crop = $('#img_crop').croppie({
+                enableExif: true,
+                viewport: {
+                    width: 200,
+                    height: 200,
+                    type: 'square'
+                },
+                boundary: {
+                    width: 300,
+                    height: 300
+                }
+            });
+
+            $('#img_upload').on('change', function () {
+                var reader = new FileReader();
+
+                reader.onload = function (event) {
+                    console.log(event);
+                    $img_crop.croppie('bind', {
+                        url: event.target.result
+                    }).then(function () {
+                        console.log("JQuery bind complete!");
+                    });
+                }
+
+                reader.readAsDataURL(this.files[0]);
+            });
+
+            $('#btn_img_crop').on('click', function () {
+                $img_crop.croppie('result', {
+                    type: 'canvas',
+                    size: 'viewport'
+                }).then(function (res) {
+                    $('#img_crop_preview').attr('src', res);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
